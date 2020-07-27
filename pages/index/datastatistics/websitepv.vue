@@ -2,29 +2,53 @@
   <div class="d_tcpde_p">
     <title-row :title="$t('aside.n_5')"
                :title2="$t('aside.n_5_2')"></title-row>
-    <!-- <el-row class="d_tcpde_main">
+    <el-row class="d_tcpde_main">
       <el-form :inline="true"
                :model="qpform"
                class="d_plist_form">
-        <el-form-item :label="$t('operating.f_1')">
-          <pp-select v-model="qpform.ppid"></pp-select>
+        <el-form-item :label="$t('operating.t_16')">
+          <el-date-picker v-model="qpform.time"
+                          type="daterange"
+                          align="right"
+                          value-format="yyyy-MM-dd"
+                          unlink-panels
+                          range-separator="-"
+                          :start-placeholder="$t('operating.f_20')"
+                          :end-placeholder="$t('operating.f_21')"
+                          :picker-options="pickerOptions">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item :label="$t('operating.f_34')">
+          <el-select v-model="qpform.tcpid"
+                     :placeholder="$t('comm.pleaseselect')"
+                     :size="cSize">
+            <el-option v-for="item in productList"
+                       :key="item.id"
+                       :label="item.name"
+                       :value="item.id">
+            </el-option>
+          </el-select>
         </el-form-item>
 
-        <el-form-item :label="$t('operating.f_2')">
-          <adtypes-select v-model="qpform.adid"></adtypes-select>
-        </el-form-item>
         <el-form-item>
           <el-button type="primary"
                      :size="cSize"
                      @click="onSubmit">{{$t('header.query')}}</el-button>
         </el-form-item>
       </el-form>
-    </el-row> -->
+    </el-row>
 
     <el-table v-loading="loading"
               class="d_plist_table"
               :data="entries">
-      <el-table-column prop="dateline"
+
+      <el-table-column v-for="item in columnList"
+                       :key="item.id"
+                       :prop="item.value"
+                       :label="item.label">
+      </el-table-column>
+
+      <!-- <el-table-column prop="created_date"
                        :label="$t('operating.t_11')">
       </el-table-column>
       <el-table-column prop="index_count"
@@ -41,7 +65,7 @@
       </el-table-column>
       <el-table-column prop="thinkcar_count"
                        :label="$t('operating.t_42')">
-      </el-table-column>
+      </el-table-column> -->
 
     </el-table>
     <el-row class="dtc_action">
@@ -98,25 +122,63 @@ export default {
       qpform: {
         ppid: '',
         adid: '',
+        tcpid: '',
+        time: '',
       },
+      searchtcIp: '',
       pagination: {
         page_size: _pageSize,
         page: 1,
       },
+      tcProductList: [
+        { 'id': 'tcp1', 'name': '星卡TT' },
+        { 'id': 'tcp2', 'name': '星卡TD' },
+      ],
       listcount: 0,
       entries: [],
+      columnList: [],
+      pickerOptions: {
+        shortcuts: [{
+          text: this.$t('operating.f_30'),
+          onClick (picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+            picker.$emit('pick', [start, end]);
+          }
+        }, {
+          text: this.$t('operating.f_31'),
+          onClick (picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+            picker.$emit('pick', [start, end]);
+          }
+        }, {
+          text: this.$t('operating.f_32'),
+          onClick (picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+            picker.$emit('pick', [start, end]);
+          }
+        }]
+      },
     }
   },
   computed: {
     ...mapState({
-      cSize: state => state.cSize
+      cSize: state => state.cSize,
+      country: state => state.country,
+      productList: state => state.productList,
     })
   },
   async asyncData ({ store, params }) {
     const _par = {
       token: getSessionCache("userToken") || '',
       size: _pageSize,
-      page: 1
+      page: 1,
+      path: 'product/1',
     };
     const _res = await getOfficialPvList(store, _par)
     return {
@@ -124,9 +186,34 @@ export default {
       listcount: parseInt(_res.data.total)
     }
   },
+  created () {
+    this.qpform.tcpid = this.productList[0].id || "1";
+    if (this.country === 'inland') {
+      this.columnList = [
+        { 'id': 'foreign1', 'value': 'create_date', 'label': this.$t('operating.t_11') },
+        { 'id': 'foreign2', 'value': 'banner_count', 'label': this.$t('operating.t_51') },
+        { 'id': 'foreign3', 'value': 'index_count', 'label': this.$t('operating.t_52') },
+        { 'id': 'foreign4', 'value': 'product_count', 'label': this.$t('operating.t_53') },
+        { 'id': 'foreign5', 'value': 'pay_count', 'label': this.$t('operating.t_54') },
+        { 'id': 'foreign6', 'value': 'xixnyongka_count', 'label': this.$t('operating.t_55') },
+      ];
+    } else {
+      this.columnList = [
+        { 'id': 'foreign1', 'value': 'create_date', 'label': this.$t('operating.t_11') },
+        { 'id': 'foreign2', 'value': 'index_count', 'label': this.$t('comm.home') },
+        { 'id': 'foreign7', 'value': 'index_banner_count', 'label': "首页广告" },
+        { 'id': 'foreign6', 'value': 'product_count', 'label': this.$t('operating.t_53') },
+        { 'id': 'foreign3', 'value': 'buy_count', 'label': this.$t('operating.t_39') },
+        { 'id': 'foreign4', 'value': 'pay_count', 'label': this.$t('operating.t_40') },
+        { 'id': 'foreign5', 'value': 'pay_info_count', 'label': "购买" },
+      ];
+
+    }
+  },
   methods: {
 
     onSubmit () {
+      // this.qpform.tcpid && (this.searchtcIp = this.qpform.tcpid || '');
       this.actiongetOfficialPvList(1);
     },
     handleCurrentChange (val) {
@@ -138,9 +225,16 @@ export default {
         token: getSessionCache("userToken") || '',
         size: _pageSize,
         page: _v || 1,
+        path: "product/" + this.qpform.tcpid,
         // platform_id: this.qpform.ppid || '',
         // poster_type_id: this.qpform.adid || '',
       };
+      if (this.qpform.time) {
+        _par.start_time = this.qpform.time[0];
+        _par.end_time = this.qpform.time[1];
+      }
+      // this.qpform.tcpid === 'tcp1' && (_par.path = 'product/5');
+
       // (this.qpform.app !== 0 && this.qpform.app) && (_par.app = this.qpform.app);
       getOfficialPvList(this.$store, _par, this).then(res => {
         this.entries = res.data.data;

@@ -22,11 +22,11 @@
                   :autosize="{ minRows: 4, maxRows: 6}"></el-input>
       </el-form-item>
 
-      <el-form-item :label="$t('operating.f_1')"
+      <el-form-item :label="$t('aside.n_8_2')"
                     prop="pid">
-        <pp-select v-model="ruleForm.pid"
+        <bp-select v-model="ruleForm.pid"
                    isnoall=true
-                   ismultiple="multiple"></pp-select>
+                   ismultiple="multiple"></bp-select>
       </el-form-item>
       <!-- <el-form-item :label="$t('operating.f_17')">
         <el-switch v-model="ruleForm.status"> </el-switch>
@@ -46,14 +46,14 @@
 import { mapState } from 'vuex'
 // import * as qiniu from 'qiniu-js'
 // import TitleRow from '@/components/home/title-row'
-import PpSelect from '@/components/home/pp-select'
+import BpSelect from '@/components/home/bp-select'
 import { getSessionCache } from '@/utils/dom/dom'
 
 export default {
   scrollToTop: true,
   components: {
     // TitleRow,
-    PpSelect,
+    BpSelect,
   },
   head () {
     return {
@@ -107,8 +107,13 @@ export default {
       this.getMessageByIdAction(this.$store, {}, this).then(res => {
         // code ,50001: 参数错误，50003： 账号或者密码错误 ， 0 ：成功
         if (res.code === 0) {
-          console.log(res.data.platform_label);
-          const _pidlist = JSON.parse('[' + String(res.data.platform_label) + ']');
+          console.log('============', res.data);
+
+          // const _pidlist = JSON.parse('[' + String(res.data.platform_label) + ']');
+          const _pidlist = [];
+          res.data.device.map((_item) => {
+            _pidlist.push(_item.id);
+          })
           console.log(_pidlist);
           this.ruleForm = {
             name: res.data.title,
@@ -166,7 +171,7 @@ export default {
         token: getSessionCache("userToken") || '',
         title: params.name || '',
         data: params.desc || '',
-        platform: params.pid.toString() || '',
+        device_ids: params.pid.toString() || '',
         // status: params.status ? 'passed' : 'waiting'
       }
       return new Promise(resolve => {
@@ -181,7 +186,7 @@ export default {
         sId: self.$route.params.bpid || '',
         title: params.name || '',
         data: params.desc || '',
-        platform: params.pid.toString() || '',
+        device_ids: params.pid.toString() || '',
         // status: params.status ? 'passed' : 'waiting'
       }
       return new Promise(resolve => {

@@ -185,8 +185,19 @@ pm2 start npm --name "nuxt-ssr-demo" -- run build
 
 对于 pm2 用法，请输入 `pm2 --help` 然后自行查阅
 
+pm2 start npm --name "nuxt-ssr-dealers" -- run build
+cd ../www/wwwroot/admin.mythinkcar.cn
+
+pm2 start npm --name "nuxt-ssr-op" -- run build
+cd ../www/wwwroot/op.mythinkcar.cn
+pm2 list
+pm2 stop 1
+pm2 restart 1
+
 ## 最后
 
 对于 `Nuxt`，在使用层面，是比较简单、好上手的。相对 vue-ssr 来说，它大大的简化了开发的配置，让开发人员可以只需思考业务的开发，而不用太去担心文件的配置。其中 `Nuxt` 通过监听 pages 目录文件变更并自动生成路由更是直接省去了我们平常对于路由的配置。
 
 但是，目前 `Nuxt` 整体还是有待提高的，目前社区相关的三方插件比较有限，市面上相关的参考资料也相对比较少。
+
+

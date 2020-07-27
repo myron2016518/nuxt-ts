@@ -25,6 +25,7 @@ export default {
    ** Customize the progress-bar color
    */
   loading: { color: '#fff' },
+  // loading: '~/components/loading.vue'
 
   /*
    ** Global CSS
@@ -66,14 +67,20 @@ export default {
   proxy: {
     // 运营
     '/tcjxs': {
-      //   target: 'http://tapi.dadaaa.com/', // 测试环境
-      target: 'http://yunying.mythinkcar.cn/',  // 正式环境
+      // target: 'http://tapi.dadaaa.com/', // 测试环境
+      target: 'http://yunying.test.ithinkcar.com/',  // 正式环境
       pathRewrite: { '^/tcjxs': '' }
     },
     // -- 获取留言列表
     '/tcapp': {
-      target: 'http://aws.ithinkcar.com/',
+      // target: 'http://aws.ithinkcar.com/', // 国外
+      target: 'http://aws.mythinkcar.cn/',  // 国内
       pathRewrite: { '^/tcapp': '' }
+    },
+    // -- 获取产品平台列表接口
+    '/tcsn': {
+      target: 'http://sn.mythinkcar.cn/',
+      pathRewrite: { '^/tcsn': '' }
     },
   },
   generate: {

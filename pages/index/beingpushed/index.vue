@@ -1,12 +1,13 @@
 <template>
   <div class="d_tcpde_p">
-    <title-row :title="$t('aside.n_8')"></title-row>
+    <title-row :title="$t('aside.n_8')"
+               :title2="$t('aside.n_8_1')"></title-row>
     <el-row class="d_tcpde_main">
       <el-form :inline="true"
                :model="qpform"
                class="d_plist_form">
-        <el-form-item :label="$t('operating.f_1')">
-          <pp-select v-model="qpform.ppid"></pp-select>
+        <el-form-item :label="$t('aside.n_8_2')">
+          <bp-select v-model="qpform.ppid"></bp-select>
         </el-form-item>
 
         <el-form-item :label="$t('operating.f_16')">
@@ -36,10 +37,10 @@
       <el-table-column prop="data"
                        :label="$t('operating.f_18')">
       </el-table-column>
-      <el-table-column :label="$t('operating.f_1')">
+      <el-table-column :label="$t('aside.n_8_2')">
         <template slot-scope="scope">
-          <p v-for="(item,idx) in scope.row.platform"
-             :key="idx">{{item}}</p>
+          <p v-for="(item,idx) in scope.row.device"
+             :key="idx">{{item.name}}</p>
         </template>
       </el-table-column>
       <el-table-column prop="user.username"
@@ -104,7 +105,7 @@
 <script>
 import { mapState } from 'vuex'
 import TitleRow from '@/components/home/title-row'
-import PpSelect from '@/components/home/pp-select'
+import BpSelect from '@/components/home/bp-select'
 import { getSessionCache } from '@/utils/dom/dom'
 const getMessageList = (store, params, self) => {
   return new Promise(resolve => {
@@ -118,7 +119,7 @@ export default {
   scrollToTop: true,
   components: {
     TitleRow,
-    PpSelect,
+    BpSelect,
   },
 
   head () {

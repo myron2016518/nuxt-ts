@@ -23,8 +23,23 @@ export function SET_USERNAME(state: { username: any }, name: any) {
 export function SET_PPSELECT(state: { productPlatformSelect: any }, porlist: any) {
   state.productPlatformSelect = porlist
 }
+export function SET_SNPPSELECT(state: { snppSelect: any }, porlist: any) {
+  state.snppSelect = porlist
+}
 export function SET_ADTYPESELECT(state: { adtypesSelect: any }, porlist: any) {
   state.adtypesSelect = porlist
+}
+export function SET_DEVICESELECT(state: { deviceSelect: any }, porlist: any) {
+  state.deviceSelect = porlist
+}
+export function SET_PRICEPRODUCTSELECT(state: { priceProductSelect: any }, porlist: any) {
+  state.priceProductSelect = porlist
+}
+export function SET_MERCHANTSELECT(state: { merchantSelect: any }, porlist: any) {
+  state.merchantSelect = porlist
+}
+export function SET_DIAGPRODUCTLIST(state: { diagProductList: any }, porlist: any) {
+  state.diagProductList = porlist
 }
 
 

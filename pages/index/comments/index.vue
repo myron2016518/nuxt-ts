@@ -4,12 +4,21 @@
     <el-row class="d_tcpde_main">
       <el-form :inline="true"
                class="d_plist_form">
-        <el-form-item :label="$t('operating.f_1')">
-          <pp-select v-model="ppid"></pp-select>
+        <el-form-item :label="$t('operating.t_28')">
+          <!-- <pp-select v-model="ppid"></pp-select> -->
+          <el-select v-model="ptdcode"
+                     :placeholder="$t('comm.pleaseselect')"
+                     :size="cSize">
+            <el-option v-for="item in appSelectList"
+                       :key="item.id"
+                       :label="item.value"
+                       :value="item.id">
+            </el-option>
+          </el-select>
         </el-form-item>
 
         <el-form-item :label="$t('operating.t_15')">
-          <el-select v-model="softid"
+          <!-- <el-select v-model="softid"
                      :placeholder="$t('comm.pleaseselect')"
                      :size="cSize">
             <el-option v-for="item in softSelectList"
@@ -17,7 +26,10 @@
                        :label="item.soft_package_id"
                        :value="item.soft_package_id">
             </el-option>
-          </el-select>
+          </el-select> -->
+          <el-input v-model="softid"
+                    :size="cSize"
+                    :placeholder="$t('comm.pleaseinput')"></el-input>
         </el-form-item>
         <el-form-item style="margin-right:50px;">
           <el-button type="primary"
@@ -43,11 +55,12 @@
       <el-table-column prop="point"
                        :label="$t('operating.t_13')">
       </el-table-column>
-      <el-table-column prop="app.app_name"
-                       :label="$t('operating.t_12')">
+      <el-table-column :label="$t('operating.t_28')">
+        <template slot-scope="scope"> {{ appSelectList[scope.row.ptd_code].value || ''  }} </template>
       </el-table-column>
-      <el-table-column :label="$t('operating.t_2')">
-        <template slot-scope="scope"> {{ scope.row.create_time |formatTime('Y-M-D h:m:s') }} </template>
+      <el-table-column prop="create_time"
+                       :label="$t('operating.t_2')">
+        <!-- <template slot-scope="scope"> {{ scope.row.create_time |formatTime('Y-M-D h:m:s') }} </template> -->
       </el-table-column>
 
       <el-table-column :label="$t('comm.action')">
@@ -86,7 +99,7 @@
 <script>
 import { mapState } from 'vuex'
 import TitleRow from '@/components/home/title-row'
-import PpSelect from '@/components/home/pp-select'
+// import PpSelect from '@/components/home/pp-select'
 import { getSessionCache } from '@/utils/dom/dom'
 const getCommentList = (store, params, self) => {
   return new Promise(resolve => {
@@ -100,7 +113,7 @@ export default {
   scrollToTop: true,
   components: {
     TitleRow,
-    PpSelect,
+    // PpSelect,
   },
 
   head () {
@@ -117,7 +130,9 @@ export default {
       loading: false,
       ppid: '0',
       softid: '',
+      ptdcode: -1,
       softSelectList: [],
+      appSelectList: [],
       pagination: {
         page_size: _pageSize,
         page: 1,
@@ -128,19 +143,20 @@ export default {
   },
   computed: {
     ...mapState({
-      productPlatformSelect: state => state.productPlatformSelect,
+      // productPlatformSelect: state => state.productPlatformSelect,
+      country: state => state.country,
       cSize: state => state.cSize
     })
   },
-  watch: {
-    ppid (val, oldVal) {// 普通的watch监听
-      console.log("ppid: " + val, oldVal);
-      const _find = this.productPlatformSelect.find(_tiem => _tiem.id === val);
-      this.softid = '';
-      _find && (this.softSelectList = _find.soft);
-    },
+  // watch: {
+  //   ppid (val, oldVal) {// 普通的watch监听
+  //     console.log("ppid: " + val, oldVal);
+  //     const _find = this.productPlatformSelect.find(_tiem => _tiem.id === val);
+  //     this.softid = '';
+  //     _find && (this.softSelectList = _find.soft);
+  //   },
 
-  },
+  // },
   async asyncData ({ store, params }) {
     const _par = {
       token: getSessionCache("userToken") || '',
@@ -151,6 +167,30 @@ export default {
     return {
       entries: _res.data.data,
       listcount: parseInt(_res.data.total)
+    }
+  },
+  created () {
+    if (this.country === 'inland') {
+      this.appSelectList = [
+        { 'id': -1, 'value': '全部' },
+        { 'id': 0, 'value': 'thinkcar' },
+        { 'id': 1, 'value': 'thinkdiag' },
+        { 'id': 2, 'value': '星卡TT' },
+        { 'id': 3, 'value': 'thinkdriver' },
+        { 'id': 4, 'value': 'thinkplus' },
+        { 'id': 5, 'value': '星卡TD' },
+      ];
+    } else {
+      this.appSelectList = [
+        { 'id': -1, 'value': '全部' },
+        { 'id': 0, 'value': 'thinkcar' },
+        { 'id': 1, 'value': 'thinkdiag' },
+        { 'id': 2, 'value': '星卡TT' },
+        { 'id': 3, 'value': 'thinkdriver' },
+        { 'id': 4, 'value': 'thinkplus' },
+        { 'id': 5, 'value': '星卡TD' },
+      ];
+
     }
   },
   methods: {
@@ -192,8 +232,8 @@ export default {
         size: _pageSize,
         page: _v || 1,
       };
-
-      (this.ppid !== '0' && this.ppid) && (_par.app_id = this.ppid);
+      console.log(this.ptdcode);
+      this.ptdcode !== -1 && (_par.ptd_code = this.ptdcode);
       this.softid !== '' && (_par.soft_package_id = this.softid);
 
       getCommentList(this.$store, _par, this).then(res => {

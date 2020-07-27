@@ -27,12 +27,21 @@
       <el-table-column prop="name"
                        :label="$t('operating.t_46')">
       </el-table-column>
+      <el-table-column prop="phone_model"
+                       :label="$t('operating.t_58')">
+      </el-table-column>
+      <el-table-column prop="phone"
+                       :label="$t('operating.t_59')">
+      </el-table-column>
       <el-table-column prop="content"
                        :label="$t('operating.t_47')">
       </el-table-column>
 
       <el-table-column prop="created_at"
                        :label="$t('operating.t_48')">
+      </el-table-column>
+      <el-table-column prop="app_version"
+                       :label="$t('operating.t_60')">
       </el-table-column>
       <el-table-column prop="rcontent"
                        :label="$t('operating.t_49')">
@@ -48,6 +57,16 @@
             {{scope.row.status==='0'?  $t('operating.b_10') : $t('operating.b_11')}}
           </el-button>
         </template>
+      </el-table-column>
+      <el-table-column :label="$t('operating.t_61')">
+        <template slot-scope="scope">
+          <el-button :type="scope.row.status==='0'? 'danger':'primary'"
+                     size="small">
+            {{scope.row.status==='0'?  $t('operating.b_15') : $t('operating.b_11')}}
+          </el-button>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('operating.t_62')">
       </el-table-column>
 
     </el-table>

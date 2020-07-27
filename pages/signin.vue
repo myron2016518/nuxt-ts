@@ -19,7 +19,8 @@
         <el-form-item :label="$t('signin.password')"
                       prop="password">
           <el-input v-model="ruleForm.password"
-                    type="password"></el-input>
+                    type="password"
+                    @keyup.enter.native="submitForm('ruleForm')"></el-input>
         </el-form-item>
 
         <el-form-item class="sgp_btn">
@@ -34,7 +35,7 @@
 </template>
 
 <script>
-import { setSessionCache } from '@/utils/dom/dom'
+import { setSessionCache, getSessionCache } from '@/utils/dom/dom'
 import TcLang from '@/components/home/lang'
 export default {
   components: {
@@ -65,6 +66,16 @@ export default {
       }
 
     }
+  },
+  created () {
+    const _token = getSessionCache("userToken");
+    const _userInfo = getSessionCache("userInfo");
+    if (_token && _userInfo) {
+      this.$router.push("/");
+    }
+  },
+  mounted () {
+
   },
   methods: {
     submitForm (formName) {

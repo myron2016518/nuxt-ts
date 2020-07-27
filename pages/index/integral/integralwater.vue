@@ -1,6 +1,7 @@
 <template>
   <div class="d_tcpde_p">
-    <title-row :title="$t('aside.n_2_2')"></title-row>
+    <title-row :title="$t('aside.n_2')"
+               :title2="$t('aside.n_2_2')"></title-row>
     <el-row class="d_tcpde_main">
       <el-form :inline="true"
                :model="qpform"

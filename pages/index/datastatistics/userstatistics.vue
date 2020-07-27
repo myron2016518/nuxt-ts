@@ -1,99 +1,65 @@
 <template>
   <div class="d_tcpde_p">
-    <title-row :title="$t('aside.n_7')"></title-row>
+    <title-row :title="$t('aside.n_5')"
+               :title2="$t('aside.n_5_7')"></title-row>
     <el-row class="d_tcpde_main">
-      <el-form :inline="true"
-               :model="qpform"
-               class="d_plist_form">
-        <el-form-item :label="$t('operating.f_5')">
-          <el-input v-model="qpform.name"
-                    :size="cSize"
-                    :placeholder="$t('comm.pleaseinput')"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary"
-                     :size="cSize"
-                     @click="onSubmit('username')">{{$t('header.query')}}</el-button>
-        </el-form-item>
-        <el-form-item :label="$t('operating.f_14')">
-          <el-input v-model="qpform.emailandtel"
-                    :size="cSize"
-                    :placeholder="$t('comm.pleaseinput')"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary"
-                     :size="cSize"
-                     @click="onSubmit('emailandtel')">{{$t('header.query')}}</el-button>
-        </el-form-item>
-        <el-form-item :label="$t('operating.f_15')">
-          <el-input v-model="qpform.sn"
-                    :size="cSize"
-                    :placeholder="$t('comm.pleaseinput')"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary"
-                     :size="cSize"
-                     @click="onSubmit('sn')">{{$t('header.query')}}</el-button>
-        </el-form-item>
-      </el-form>
+      <el-radio-group v-model="radioTxt"
+                      :size="cSize"
+                      @change="tableTypeChange">
+        <el-radio-button label="comment_count">{{$t('operating.t_29')}}</el-radio-button>
+        <el-radio-button label="report_count">{{$t('operating.t_30')}}</el-radio-button>
+        <el-radio-button label="order_total_amount">支付总额</el-radio-button>
+      </el-radio-group>
     </el-row>
 
     <el-table v-loading="loading"
               class="d_plist_table"
               stripe
               :data="entries">
-      <el-table-column prop="id"
-                       :label="$t('operating.t_1')">
-      </el-table-column>
-      <el-table-column prop="email"
-                       :label="$t('operating.f_14')">
-      </el-table-column>
-      <el-table-column prop="user_name"
+      <el-table-column prop="user.name"
                        :label="$t('operating.f_5')">
       </el-table-column>
-      <el-table-column label="SN">
-        <template slot-scope="scope">
-          <p v-for="s in scope.row.order"
-             :key="s.id">{{s.device_sn}}</p>
-        </template>
-      </el-table-column>
-      <el-table-column prop="create_time"
-                       :label="$t('operating.t_26')">
-      </el-table-column>
-      <el-table-column prop="area"
-                       :label="$t('operating.t_27')">
+      <el-table-column prop="user.email"
+                       label="用户邮箱">
       </el-table-column>
 
-      <el-table-column :label="$t('comm.details')">
+      <el-table-column prop="user.created_at"
+                       label="创建时间">
+      </el-table-column>
+
+      <!-- <el-table-column prop="user.phone"
+                       label="电话号码">
+      </el-table-column> -->
+      <el-table-column :label="getTypeName()">
         <template slot-scope="scope">
-          <el-button type="text"
-                     size="small"
-                     @click.native.prevent="showDetilsList(scope.row)">
-            {{$t('operating.b_4')}}
+          {{radioTxt==='comment_count' ? scope.row.count:''}}
+          {{radioTxt==='order_total_amount' ? "$"+scope.row.count:''}}
+          <el-button v-if="radioTxt==='report_count'"
+                     type="text"
+                     @click.native.prevent="goReportList(scope.row.user_id)">
+            {{scope.row.count}}
           </el-button>
         </template>
       </el-table-column>
-      <el-table-column prop="app_label"
-                       :label="$t('operating.t_28')">
-      </el-table-column>
-      <el-table-column prop="phone_model"
-                       :label="$t('operating.t_31')">
-      </el-table-column>
-      <el-table-column prop="comment_count"
+
+      <!-- <el-table-column v-if="radioTxt==='comment_count'"
+                       prop="count"
                        :label="$t('operating.t_29')">
       </el-table-column>
-      <el-table-column :label="$t('operating.t_30')"
-                       prop="report_count">
+      <el-table-column v-if="radioTxt==='report_count'"
+                       :label="$t('operating.t_30')"
+                       prop="count">
         <template slot-scope="scope">
           <el-button type="text"
                      @click.native.prevent="goReportList(scope.row.user_id)">
-            {{scope.row.report_count}}
+            {{scope.row.count}}
           </el-button>
         </template>
       </el-table-column>
-      <el-table-column label="支付总额">
-        <template slot-scope="scope"> ${{scope.row.order_total_amount}} </template>
-      </el-table-column>
+      <el-table-column v-if="radioTxt==='order_total_amount'"
+                       label="支付总额">
+        <template slot-scope="scope"> ${{scope.row.count}} </template>
+      </el-table-column> -->
     </el-table>
     <el-row class="dtc_action">
       <el-col :span="24"
@@ -146,7 +112,7 @@ import TitleRow from '@/components/home/title-row'
 import { getSessionCache } from '@/utils/dom/dom'
 const getUserList = (store, params, self) => {
   return new Promise(resolve => {
-    store.dispatch('getUserList', params).then(res => {
+    store.dispatch(params.url, params).then(res => {
       resolve(res)
     })
   })
@@ -160,7 +126,7 @@ export default {
 
   head () {
     return {
-      title: this.$t('aside.n_7'),
+      title: this.$t('aside.n_5_7'),
       meta: [
         { hid: 'adv custom title', name: 'adv', content: 'adv custom title description' }
       ]
@@ -175,6 +141,7 @@ export default {
         emailandtel: '',
         sn: '',
       },
+      radioTxt: 'comment_count',
       pagination: {
         page_size: _pageSize,
         page: 1,
@@ -195,6 +162,7 @@ export default {
   },
   async asyncData ({ store, params }) {
     const _par = {
+      url: 'getcommentCountList',
       token: getSessionCache("userToken") || '',
       size: _pageSize,
       page: 1
@@ -215,6 +183,9 @@ export default {
     // 报告数量
     goReportList (_userid) {
       this.$router.push("/usermanagement/" + _userid);
+    },
+    tableTypeChange (_t) {
+      this.actiongetUserList(1, this.actiontype);
     },
     // 排序
     sortChange (_c, _p, _o) {
@@ -240,6 +211,7 @@ export default {
     actiongetUserList (_v, _type) {
       this.loading = true;
       const _par = {
+        url: 'getcommentCountList',
         token: getSessionCache("userToken") || '',
         size: _pageSize,
         page: _v || 1,
@@ -253,7 +225,8 @@ export default {
           this.qpform.sn !== '' && (_par.device_sn = this.qpform.sn || '');
         }
       }
-
+      this.radioTxt === "report_count" && (_par.url = "getreportCountList");
+      this.radioTxt === "order_total_amount" && (_par.url = "getorderCountList");
       console.log('===this.orderName===', this.orderName);
 
       if (this.orderName) {
@@ -261,12 +234,19 @@ export default {
         _par.order_column = this.orderName || '';
       }
 
+
       getUserList(this.$store, _par, this).then(res => {
         this.entries = res.data.data;
         this.listcount = parseInt(res.data.total)
         this.pagination.page = _v;
         this.loading = false;
       })
+    },
+    getTypeName () {
+      let _txt = this.$t('operating.t_29');
+      this.radioTxt === "report_count" && (_txt = this.$t('operating.t_30'));
+      this.radioTxt === "order_total_amount" && (_txt = "支付总额");
+      return _txt || "";
     },
 
 

@@ -2,24 +2,30 @@
   <div class="d_tcpde_p">
     <title-row :title="$t('aside.n_5')"
                :title2="$t('aside.n_5_6')"></title-row>
-    <!-- <el-row class="d_tcpde_main">
+    <el-row class="d_tcpde_main">
       <el-form :inline="true"
                :model="qpform"
                class="d_plist_form">
-        <el-form-item :label="$t('operating.f_1')">
-          <pp-select v-model="qpform.ppid"></pp-select>
+        <el-form-item :label="$t('operating.t_16')">
+          <el-date-picker v-model="qpform.time"
+                          type="daterange"
+                          align="right"
+                          value-format="yyyy-MM-dd"
+                          unlink-panels
+                          range-separator="-"
+                          :start-placeholder="$t('operating.f_20')"
+                          :end-placeholder="$t('operating.f_21')"
+                          :picker-options="pickerOptions">
+          </el-date-picker>
         </el-form-item>
 
-        <el-form-item :label="$t('operating.f_2')">
-          <adtypes-select v-model="qpform.adid"></adtypes-select>
-        </el-form-item>
         <el-form-item>
           <el-button type="primary"
                      :size="cSize"
                      @click="onSubmit">{{$t('header.query')}}</el-button>
         </el-form-item>
       </el-form>
-    </el-row> -->
+    </el-row>
 
     <el-table v-loading="loading"
               class="d_plist_table"
@@ -98,6 +104,7 @@ export default {
       qpform: {
         ppid: '',
         adid: '',
+        time: '',
       },
       pagination: {
         page_size: _pageSize,
@@ -105,6 +112,33 @@ export default {
       },
       listcount: 0,
       entries: [],
+      pickerOptions: {
+        shortcuts: [{
+          text: this.$t('operating.f_30'),
+          onClick (picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+            picker.$emit('pick', [start, end]);
+          }
+        }, {
+          text: this.$t('operating.f_31'),
+          onClick (picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+            picker.$emit('pick', [start, end]);
+          }
+        }, {
+          text: this.$t('operating.f_32'),
+          onClick (picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+            picker.$emit('pick', [start, end]);
+          }
+        }]
+      },
     }
   },
   computed: {
@@ -138,10 +172,11 @@ export default {
         token: getSessionCache("userToken") || '',
         size: _pageSize,
         page: _v || 1,
-        platform_id: this.qpform.ppid || '',
-        poster_type_id: this.qpform.adid || '',
       };
-      (this.qpform.app !== 0 && this.qpform.app) && (_par.app = this.qpform.app);
+      if (this.qpform.time) {
+        _par.start_time = this.qpform.time[0];
+        _par.end_time = this.qpform.time[1];
+      }
       getDMOfficialAccountList(this.$store, _par, this).then(res => {
         this.entries = res.data.data;
         this.listcount = parseInt(res.data.total)
@@ -149,25 +184,7 @@ export default {
         this.loading = false;
       })
     },
-    getDataInfo (_data, _title, _name) {
-      let _appid = 0;
-      _title === 'thinkdiag' && (_appid = 1);
-      _title === 'thinktool' && (_appid = 2);
-      const _item = _data.data || [];
-      const _find = _item.find(_t => _t.app_id === _appid)
-      if (_find) {
-        let _count = 0;
-        _name === 'count' && (_count = _find.data[_name] || 0);
-        if (_name === 'report') {
-          const _itemreport = _find.data.report || [];
-          const _findreport = _itemreport.find(_t => _t.product_type === _appid);
-          _findreport && (_count = _findreport.count);
-        }
-        return _count;
-      } else {
-        return 0;
-      }
-    },
+
 
   }
 }

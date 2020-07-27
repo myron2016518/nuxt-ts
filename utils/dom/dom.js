@@ -292,3 +292,29 @@ export function deepObjectMerge (FirstOBJ, SecondOBJ) {
   }
   return FirstOBJ;
 }
+
+// 数据转化  
+function formatNumber (n) {
+  n = n.toString()
+  return n[1] ? n : '0' + n
+}
+// 时间格式化
+export function getFormatTime (number, format) {
+  if (!number) return '--'
+
+  const formateArr = ['Y', 'M', 'D', 'h', 'm', 's'];
+  let returnArr = [];
+  const date = new Date(number * 1000);
+  returnArr.push(date.getFullYear());
+  returnArr.push(formatNumber(date.getMonth() + 1));
+  returnArr.push(formatNumber(date.getDate()));
+
+  returnArr.push(formatNumber(date.getHours()));
+  returnArr.push(formatNumber(date.getMinutes()));
+  returnArr.push(formatNumber(date.getSeconds()));
+
+  for (const i in returnArr) {
+    format = format.replace(formateArr[i], returnArr[i]);
+  }
+  return format;
+}

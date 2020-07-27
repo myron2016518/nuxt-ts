@@ -166,6 +166,18 @@ export const getOfficialPvList = async (store: any, params: any) => {
 export const getOfficialSaleList = async (store: any, params: any) => {
   return await request.get('/tcjxs/api/data-manage/officialSale', { params: params })
 }
+// 数据统计-用户统计-发帖量
+export const getcommentCountList = async (store: any, params: any) => {
+  return await request.get('/tcjxs/api/data-manage/commentCount', { params: params })
+}
+// 数据统计-用户统计-报告数量
+export const getreportCountList = async (store: any, params: any) => {
+  return await request.get('/tcjxs/api/data-manage/reportCount', { params: params })
+}
+// 数据统计-用户统计-支付总额
+export const getorderCountList = async (store: any, params: any) => {
+  return await request.get('/tcjxs/api/data-manage/orderCount', { params: params })
+}
 
 
 // 用户管理-用户列表
@@ -202,6 +214,86 @@ export const pushMessage = async (store: any, params: any) => {
   return await request.post('/tcjxs/api/push/message/' + params.sId, qs.stringify(params))
 }
 
+// 推送消息渠道列表
+export const getDeviceList = async (store: any, params: any) => {
+  return await request.get('/tcjxs/api/device', { params: params })
+}
+// 推送消息渠道添加
+export const addDevice = async (store: any, params: any) => {
+  return await request.post('/tcjxs/api/device', qs.stringify(params))
+}
+// 推送消息渠道单个查询
+export const getDeviceById = async (store: any, params: any) => {
+  return await request.get('/tcjxs/api/device/' + params.sId, { params: params })
+}
+// 推送消息渠道修改
+export const editDevice = async (store: any, params: any) => {
+  return await request.put('/tcjxs/api/device/' + params.sId, qs.stringify(params))
+}
+// 推送消息渠道删除 by  id 
+export const deletDevice = async (store: any, params: any) => {
+  return await request.delete('/tcjxs/api/device/' + params.sId, { params: params })
+}
+
+
+// 营销方式列表
+export const getMarketingList = async (store: any, params: any) => {
+  return await request.get('/tcjxs/api/marketing', { params: params })
+}
+// 营销方式添加
+export const addMarketing = async (store: any, params: any) => {
+  return await request.post('/tcjxs/api/marketing', qs.stringify(params))
+}
+// 营销方式单个查询
+export const getMarketingById = async (store: any, params: any) => {
+  return await request.get('/tcjxs/api/marketing/' + params.sId, { params: params })
+}
+// 营销方式修改
+export const editMarketing = async (store: any, params: any) => {
+  return await request.put('/tcjxs/api/marketing/' + params.sId, qs.stringify(params))
+}
+
+// 产品定价列表
+export const getProductPricingList = async (store: any, params: any) => {
+  return await request.get('/tcjxs/api/product-pricing', { params: params })
+}
+// 产品定价单个查询
+export const getProductPricingById = async (store: any, params: any) => {
+  return await request.get('/tcjxs/api/product-pricing/' + params.sId, { params: params })
+}
+// 产品定价添加
+export const addProductPricing = async (store: any, params: any) => {
+  return await request.post('/tcjxs/api/product-pricing', qs.stringify(params))
+}
+// 产品定价删除 by  id 
+export const deletProductPricing = async (store: any, params: any) => {
+  return await request.delete('/tcjxs/api/product-pricing/' + params.sId, { params: params })
+}
+// 软件价格重写
+export const overwriteSoftPrice = async (store: any, params: any) => {
+  return await request.put('/tcjxs/api/overwrite/soft-price/' + params.sId, qs.stringify(params))
+}
+
+// 产品定价经销商查询
+export const getProductMerchantList = async (store: any, params: any) => {
+  return await request.get('/tcjxs/api/product-merchant', { params: params })
+}
+
+
+
+//  产品列表
+export const getProductSelectList = async (store: any, params: any) => {
+  return await request.get('/tcjxs/api/product', { params: params })
+}
+//  软件列表
+export const getDiagProductList = async (store: any, params: any) => {
+  return await request.get('/tcjxs/api/diag-product-list', { params: params })
+}
+//  经销商列表
+export const getMerchantSelectList = async (store: any, params: any) => {
+  return await request.get('/tcjxs/api/merchant', { params: params })
+}
+
 
 
 // 获取留言列表
@@ -212,3 +304,9 @@ export const getFeedBackApp = async (store: any, params: any) => {
 export const ajaxAppReply = async (store: any, params: any) => {
   return await request.get('/tcapp/AdPush/Api/ajaxAppReply', { params: params })
 }
+
+// 获取产品平台列表接口  http://sn.mythinkcar.cn/Api/getAllProductList
+export const getAllProductList = async (store: any, params: any) => {
+  return await request.get('/tcsn/Api/getAllProductList', { params: params })
+}
+

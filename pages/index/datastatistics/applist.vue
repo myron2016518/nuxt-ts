@@ -6,13 +6,19 @@
       <el-form :inline="true"
                :model="qpform"
                class="d_plist_form">
-        <el-form-item :label="$t('operating.f_1')">
-          <pp-select v-model="qpform.ppid"></pp-select>
+        <el-form-item :label="$t('operating.t_16')">
+          <el-date-picker v-model="qpform.time"
+                          type="daterange"
+                          align="right"
+                          value-format="yyyy-MM-dd"
+                          unlink-panels
+                          range-separator="-"
+                          :start-placeholder="$t('operating.f_20')"
+                          :end-placeholder="$t('operating.f_21')"
+                          :picker-options="pickerOptions">
+          </el-date-picker>
         </el-form-item>
 
-        <el-form-item :label="$t('operating.f_2')">
-          <adtypes-select v-model="qpform.adid"></adtypes-select>
-        </el-form-item>
         <el-form-item>
           <el-button type="primary"
                      :size="cSize"
@@ -24,35 +30,93 @@
     <el-table v-loading="loading"
               class="d_plist_table"
               :data="entries">
-      <el-table-column prop="datetime"
+      <el-table-column prop="ymd"
+                       fixed
+                       width="150"
                        :label="$t('operating.t_16')">
       </el-table-column>
-      <el-table-column label="ThinkCar"
+      <el-table-column :label="tableTitle.thinkcar"
                        align="center">
-        <el-table-column :label="$t('operating.t_17')">
-          <template slot-scope="scope"> {{ getDataInfo(scope.row,'thinkcar','total_user_count')   }} </template>
-        </el-table-column>
-        <el-table-column :label="$t('operating.t_18')">
-          <template slot-scope="scope"> {{ getDataInfo(scope.row,'thinkcar','count')   }} </template>
-        </el-table-column>
+        <el-table-column prop="apps.0.total_user_count"
+                         :label="$t('operating.t_17')"> </el-table-column>
+        <el-table-column prop="apps.0.count"
+                         :label="$t('operating.t_21')"> </el-table-column>
+        <el-table-column prop="apps.0.day_live"
+                         label="日活量"> </el-table-column>
+        <el-table-column prop="apps.0.week_live"
+                         label="周活量"> </el-table-column>
+        <el-table-column prop="apps.0.month_live"
+                         label="月活量"> </el-table-column>
       </el-table-column>
-      <el-table-column label="ThinkDiag"
+
+      <el-table-column :label="tableTitle.thinkdiag"
                        align="center">
-        <el-table-column :label="$t('operating.t_17')">
-          <template slot-scope="scope"> {{ getDataInfo(scope.row,'thinkdiag','total_user_count')   }} </template>
-        </el-table-column>
-        <el-table-column :label="$t('operating.t_18')">
-          <template slot-scope="scope"> {{ getDataInfo(scope.row,'thinkdiag','count')   }} </template>
-        </el-table-column>
+        <el-table-column prop="apps.1.total_user_count"
+                         :label="$t('operating.t_17')"> </el-table-column>
+        <el-table-column prop="apps.1.count"
+                         :label="$t('operating.t_21')"> </el-table-column>
+        <el-table-column prop="apps.1.day_live"
+                         label="日活量"> </el-table-column>
+        <el-table-column prop="apps.1.week_live"
+                         label="周活量"> </el-table-column>
+        <el-table-column prop="apps.1.month_live"
+                         label="月活量"> </el-table-column>
       </el-table-column>
-      <el-table-column label="ThinkTool"
+
+      <el-table-column :label="tableTitle.thinkdiag_mini"
                        align="center">
-        <el-table-column :label="$t('operating.t_17')">
-          <template slot-scope="scope"> {{ getDataInfo(scope.row,'thinktool','total_user_count')   }} </template>
-        </el-table-column>
-        <el-table-column :label="$t('operating.t_18')">
-          <template slot-scope="scope"> {{ getDataInfo(scope.row,'thinktool','count')   }} </template>
-        </el-table-column>
+        <el-table-column prop="apps.5.total_user_count"
+                         :label="$t('operating.t_17')"> </el-table-column>
+        <el-table-column prop="apps.5.count"
+                         :label="$t('operating.t_21')"> </el-table-column>
+        <el-table-column prop="apps.5.day_live"
+                         label="日活量"> </el-table-column>
+        <el-table-column prop="apps.5.week_live"
+                         label="周活量"> </el-table-column>
+        <el-table-column prop="apps.5.month_live"
+                         label="月活量"> </el-table-column>
+      </el-table-column>
+
+      <el-table-column :label="tableTitle.thinktool"
+                       align="center">
+        <el-table-column prop="apps.2.total_user_count"
+                         :label="$t('operating.t_17')"> </el-table-column>
+        <el-table-column prop="apps.2.count"
+                         :label="$t('operating.t_21')"> </el-table-column>
+        <el-table-column prop="apps.2.day_live"
+                         label="日活量"> </el-table-column>
+        <el-table-column prop="apps.2.week_live"
+                         label="周活量"> </el-table-column>
+        <el-table-column prop="apps.2.month_live"
+                         label="月活量"> </el-table-column>
+      </el-table-column>
+
+      <el-table-column :label="tableTitle.thinktool_mini"
+                       align="center">
+        <el-table-column prop="apps.15.total_user_count"
+                         :label="$t('operating.t_17')"> </el-table-column>
+        <el-table-column prop="apps.15.count"
+                         :label="$t('operating.t_21')"> </el-table-column>
+        <el-table-column prop="apps.15.day_live"
+                         label="日活量"> </el-table-column>
+        <el-table-column prop="apps.15.week_live"
+                         label="周活量"> </el-table-column>
+        <el-table-column prop="apps.15.month_live"
+                         label="月活量"> </el-table-column>
+      </el-table-column>
+
+      <el-table-column :label="tableTitle.thinkdriver"
+                       align="center">
+        <el-table-column prop="apps.3.total_user_count"
+                         :label="$t('operating.t_17')"> </el-table-column>
+        <el-table-column prop="apps.3.count"
+                         :label="$t('operating.t_21')"> </el-table-column>
+        <el-table-column prop="apps.3.day_live"
+                         label="日活量"> </el-table-column>
+        <el-table-column prop="apps.3.week_live"
+                         label="周活量"> </el-table-column>
+        <el-table-column prop="apps.3.month_live"
+                         label="月活量"> </el-table-column>
       </el-table-column>
 
     </el-table>
@@ -76,8 +140,8 @@
 <script>
 import { mapState } from 'vuex'
 import TitleRow from '@/components/home/title-row'
-import PpSelect from '@/components/home/pp-select'
-import AdtypesSelect from '@/components/home/adtypes-select'
+// import PpSelect from '@/components/home/pp-select'
+// import AdtypesSelect from '@/components/home/adtypes-select'
 import { getSessionCache } from '@/utils/dom/dom'
 const getDataManageAppList = (store, params, self) => {
   return new Promise(resolve => {
@@ -91,8 +155,8 @@ export default {
   scrollToTop: true,
   components: {
     TitleRow,
-    PpSelect,
-    AdtypesSelect
+    // PpSelect,
+    // AdtypesSelect
   },
 
   head () {
@@ -110,6 +174,7 @@ export default {
       qpform: {
         ppid: '',
         adid: '',
+        time: '',
       },
       pagination: {
         page_size: _pageSize,
@@ -117,11 +182,47 @@ export default {
       },
       listcount: 0,
       entries: [],
+      pickerOptions: {
+        shortcuts: [{
+          text: this.$t('operating.f_30'),
+          onClick (picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+            picker.$emit('pick', [start, end]);
+          }
+        }, {
+          text: this.$t('operating.f_31'),
+          onClick (picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+            picker.$emit('pick', [start, end]);
+          }
+        }, {
+          text: this.$t('operating.f_32'),
+          onClick (picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+            picker.$emit('pick', [start, end]);
+          }
+        }]
+      },
+      tableTitle: {
+        thinkcar: 'ThinkCar',
+        thinkdiag: 'ThinkDiag',
+        thinkdiag_mini: 'ThinkDiag Mini',
+        thinktool: 'ThinkTool',
+        thinktool_mini: 'ThinkTool Mini',
+        thinkdriver: 'ThinkDriver',
+      },
     }
   },
   computed: {
     ...mapState({
-      cSize: state => state.cSize
+      cSize: state => state.cSize,
+      country: state => state.country,
     })
   },
   async asyncData ({ store, params }) {
@@ -134,6 +235,14 @@ export default {
     return {
       entries: _res.data.data,
       listcount: parseInt(_res.data.total)
+    }
+  },
+
+  created () {
+    if (this.country === 'inland') {
+      this.tableTitle.thinkcar = '星卡TC';
+      this.tableTitle.thinkdiag = '星卡TD';
+      this.tableTitle.thinktool = '星卡TT';
     }
   },
   methods: {
@@ -150,10 +259,13 @@ export default {
         token: getSessionCache("userToken") || '',
         size: _pageSize,
         page: _v || 1,
-        platform_id: this.qpform.ppid || '',
-        poster_type_id: this.qpform.adid || '',
       };
-      (this.qpform.app !== 0 && this.qpform.app) && (_par.app = this.qpform.app);
+
+      if (this.qpform.time) {
+        _par.start_time = this.qpform.time[0];
+        _par.end_time = this.qpform.time[1];
+      }
+      // (this.qpform.time !== 0 && this.qpform.app) && (_par.app = this.qpform.app);
       getDataManageAppList(this.$store, _par, this).then(res => {
         this.entries = res.data.data;
         this.listcount = parseInt(res.data.total)
@@ -162,7 +274,7 @@ export default {
       })
     },
     getDataInfo (_data, _title, _name) {
-      console.log(_data, _title, _name);
+      // console.log(_data, _title, _name);
       let _appid = 0;
       _title === 'thinkdiag' && (_appid = 1);
       _title === 'thinktool' && (_appid = 2);
